@@ -34,7 +34,7 @@ You should set this to true for the first run only so that a bootstrap.dat file 
 
     vertcoin_download_bootstrap: False
 
-The author fee is the percent of shares to donate to the vertcoin developers. The admin fee
+The author fee is the percent of shares to donate to the vertcoin developers. The admin fee goes to the addresses you define below.
 
     vertcoin_author_fee: 1
     vertcoin_admin_fee: 1
