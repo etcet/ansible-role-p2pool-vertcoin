@@ -23,6 +23,8 @@ On initial setup, it'll take several hours to download and load the blockchain f
 
 Once it's all loaded and you can load your p2pool sites on ports 9171 and 9181, you should re-run the play without vertcoin_download_bootstrap so that the bootstrap.dat.old file gets removed.
 
+Don't forget to forward those ports if you're behind a NAT.
+
 ## Defaults
 
 You should change vertcoin_rpc_user and vertcoin_rpc_password.

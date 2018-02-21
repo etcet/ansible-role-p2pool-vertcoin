@@ -44,6 +44,8 @@
     url: https://github.com/vertcoin-project/vertcoin-core/releases/download/0.12.0/vertcoin-v0.12.0-linux-64bit.zip
     dest: /home/vertcoin/vertcoin-0.12.0.zip
     checksum: sha256:0e0d6fe724a227fd03e8a2ee39851857c5e3eba7783ac1d2557f97a381150926
+    owner: vertcoin
+    group: vertcoin
   tags: vertcoin
 
 - name: Unzip vertcoin.zip
@@ -88,19 +90,44 @@
 
 - name: Download p2pool-ui-punchy
   get_url:
-    url: https://github.com/justino/p2pool-ui-punchy/archive/v2.1.zip
-    dest: /home/vertcoin/punchy_v2.1.zip
+    url: https://github.com/justino/p2pool-ui-punchy/archive/v2.1.tar.gz
+    dest: /home/vertcoin/punchy_v2.1.tar.gz
     owner: vertcoin
     group: vertcoin
-    checksum: sha256:514631b4d3ff7d3e781b69f05ea2e038fd083d008a8a8389a1fef2076cecd33e
+    checksum: sha256:f59a30fa146f1e8a4c25e53dfedbd1334f0b4777e60c3b9faaaff1a047988a4d
   tags: vertcoin
 
-- name: Unzip p2pool-ui-punchy
+- name: Unarchive p2pool-ui-punchy
   unarchive:
-    src: /home/vertcoin/punchy_v2.1.zip
-    dest: /home/vertcoin/p2pool-vtc/web-static/
+    src: /home/vertcoin/punchy_v2.1.tar.gz
+    dest: /home/vertcoin/
     remote_src: yes
     keep_newer: yes
+    owner: vertcoin
+    group: vertcoin
+  tags: vertcoin
+
+- name: Is web-static a link?
+  stat:
+    path: /home/vertcoin/p2pool-vtc/web-static
+  register: web_static
+  tags: vertcoin
+
+- name: Remove old web-static
+  file:
+    path: /home/vertcoin/p2pool-vtc/web-static
+    state: absent
+  when: not web_static.stat.islnk
+  tags: vertcoin
+
+- name: Link web-static to p2pool-ui-punchy
+  file:
+    src: /home/vertcoin/p2pool-ui-punchy-2.1 
+    dest: /home/vertcoin/p2pool-vtc/web-static
+    owner: vertcoin
+    group: vertcoin
+    state: link
+  when: not web_static.stat.islnk
   tags: vertcoin
 
 - name: Template p2pool service for network1

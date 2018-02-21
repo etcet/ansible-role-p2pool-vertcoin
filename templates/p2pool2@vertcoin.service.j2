@@ -5,7 +5,7 @@ After=vertcoind.service
 [Service]
 Type=simple
 User=%i
-ExecStart=/home/vertcoin/p2pool-vtc/run_p2pool.py --net vertcoin2 --give-author {{ vertcoin_author_fee }} -f {{ vertcoin_admin_fee }} -a {{ vertcoin_admin_address }} --min-difficulty {{ vertcoin_min_difficulty }}
+ExecStart=/home/vertcoin/p2pool-vtc/run_p2pool.py --net vertcoin2 --give-author {{ vertcoin_author_fee }} -f {{ vertcoin_admin_fee }} -a {{ vertcoin_admin_address_2 }} --min-difficulty {{ vertcoin_min_difficulty_2 }}
 
 [Install]
 WantedBy=multi-user.target
