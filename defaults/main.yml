@@ -1,0 +1,10 @@
+vertcoin_rpc_user: rpcuser
+vertcoin_rpc_password: rpcpassword
+
+vertcoin_author_fee: 1
+vertcoin_admin_fee: 1
+vertcoin_admin_address_1: 'Vg96gBBBENPojYwRr1gTRfgFS5d5Ru1wKC'
+vertcoin_min_difficulty_1: 16
+vertcoin_admin_address_2: 'Vg96gBBBENPojYwRr1gTRfgFS5d5Ru1wKC'
+vertcoin_min_difficulty_2: 8
+vertcoin_download_bootstrap: False

@@ -1,0 +1,16 @@
+---
+
+- name: restart vertcoind
+  service:
+    name: vertcoind@vertcoin
+    state: restarted
+
+- name: restart p2pool1
+  service:
+    name: p2pool1@vertcoin
+    state: restarted
+
+- name: restart p2pool2
+  service:
+    name: p2pool2@vertcoin
+    state: restarted

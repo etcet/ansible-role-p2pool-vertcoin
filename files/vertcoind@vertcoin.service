@@ -1,0 +1,11 @@
+[Unit]
+Description=vertcoind
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+ExecStart=/usr/local/bin/vertcoind -onlynet=ipv4
+
+[Install]
+WantedBy=multi-user.target

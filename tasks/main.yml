@@ -1,0 +1,161 @@
+---
+
+- name: Install epel-release
+  package:
+    name: epel-release
+    state: present
+  tags: vertcoin
+
+- name: Install required tools
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - unzip
+    - git
+    - python2-pip
+    - gcc
+    - python-devel
+  tags: vertcoin
+
+- name: Create vertcoin user
+  user:
+    name: vertcoin    
+  tags: vertcoin
+
+- name: Create .vertcoin directory
+  file:
+    name: /home/vertcoin/.vertcoin/
+    owner: vertcoin
+    group: vertcoin
+    state: directory
+  tags: vertcoin
+
+- name: Template vertcoin.conf
+  template:
+    src: vertcoin.conf.j2
+    dest: /home/vertcoin/.vertcoin/vertcoin.conf
+    owner: vertcoin
+    group: vertcoin
+  tags: vertcoin
+
+- name: Download vertcoind
+  get_url:
+    url: https://github.com/vertcoin-project/vertcoin-core/releases/download/0.12.0/vertcoin-v0.12.0-linux-64bit.zip
+    dest: /home/vertcoin/vertcoin-0.12.0.zip
+    checksum: sha256:0e0d6fe724a227fd03e8a2ee39851857c5e3eba7783ac1d2557f97a381150926
+  tags: vertcoin
+
+- name: Unzip vertcoin.zip
+  unarchive:
+    src: /home/vertcoin/vertcoin-0.12.0.zip
+    dest: /usr/local/bin
+    remote_src: yes
+    keep_newer: yes
+  tags: vertcoin
+
+- name: Copy vertcoind service
+  copy:
+    src: vertcoind@vertcoin.service
+    dest: /etc/systemd/system/vertcoind@vertcoin.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart vertcoind
+  tags: vertcoin
+
+- name: Clone p2pool-vtc
+  git: 
+    repo: 'https://github.com/vertcoin-project/p2pool-vtc.git'
+    dest: /home/vertcoin/p2pool-vtc
+    recursive: yes
+    update: no
+  become: true
+  become_user: vertcoin
+  tags: vertcoin
+
+- name: Install p2pool-vtc requirements
+  pip:
+    requirements: /home/vertcoin/p2pool-vtc/requirements.txt
+  tags: vertcoin
+
+- name: Install lyra2re-hash-python
+  command: python setup.py install
+  args:
+    chdir: /home/vertcoin/p2pool-vtc/lyra2re-hash-python/
+    creates: /home/vertcoin/p2pool-vtc/lyra2re-hash-python/build/lib.linux-x86_64-2.7/lyra2re2_hash.so
+  tags: vertcoin
+
+- name: Download p2pool-ui-punchy
+  get_url:
+    url: https://github.com/justino/p2pool-ui-punchy/archive/v2.1.zip
+    dest: /home/vertcoin/punchy_v2.1.zip
+    owner: vertcoin
+    group: vertcoin
+    checksum: sha256:514631b4d3ff7d3e781b69f05ea2e038fd083d008a8a8389a1fef2076cecd33e
+  tags: vertcoin
+
+- name: Unzip p2pool-ui-punchy
+  unarchive:
+    src: /home/vertcoin/punchy_v2.1.zip
+    dest: /home/vertcoin/p2pool-vtc/web-static/
+    remote_src: yes
+    keep_newer: yes
+  tags: vertcoin
+
+- name: Template p2pool service for network1
+  template:
+    src: p2pool1@vertcoin.service.j2
+    dest: /etc/systemd/system/p2pool1@vertcoin.service
+  notify: restart p2pool1
+  tags: vertcoin
+
+- name: Template p2pool service for network2
+  template:
+    src: p2pool2@vertcoin.service.j2
+    dest: /etc/systemd/system/p2pool2@vertcoin.service
+  notify: restart p2pool2
+  tags: vertcoin
+
+- name: Download bootstrap.dat, this may take a while - it's ~2.5GB
+  get_url:
+    url: http://etcet.net/vtc/bootstrap.dat
+    dest: /home/vertcoin/.vertcoin/bootstrap.dat
+    owner: vertcoin
+    group: vertcoin
+    checksum: sha256:103bd485d7744cc05ed79f16ba3d58042e56f6fadb6ae410a7337c22f77489ce
+  when: vertcoin_download_bootstrap
+  tags: vertcoin
+
+- name: Remove bootstrap.dat.old
+  file:
+    name: /home/vertcoin/.vertcoin/bootstrap.dat.old
+    state: absent
+  tags: vertcoin
+
+- name: Reload systemd configs
+  systemd:
+    daemon_reload: yes
+  tags: vertcoin
+
+- name: Start and enable vertcoind
+  service: 
+    name: vertcoind@vertcoin
+    state: started
+    enabled: yes
+  tags: vertcoin
+
+- name: Start and enable p2pool network1
+  service:
+    name: p2pool1@vertcoin.service
+    state: started
+    enabled: yes
+  tags: vertcoin
+
+- name: Start and enable p2pool network2
+  service:
+    name: p2pool2@vertcoin.service
+    state: started
+    enabled: yes
+  tags: vertcoin
+
