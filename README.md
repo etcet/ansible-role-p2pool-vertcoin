@@ -4,20 +4,20 @@ An ansible role which installs vertcoind and p2pool-vtc on CentOS 7.
 
 An example play, which also uses https://github.com/etcet/ansible-role-firewalld to open ports.
 
-- hosts: all
-  user: root
-  roles:
-    - role: ansible-role-firewalld
-      firewalld_allowed_ports:
-        - '5889/tcp'
-        - '9171/tcp'
-        - '9181/tcp'
-        - '9346/tcp'
-        - '9347/tcp'
-    - role: ansible-role-p2pool-vertcoin
-      vertcoin_rpc_user: 'rpcuser'
-      vertcoin_rpc_pass: 'MyBijv6CZt7NMjXMYqmcL9LMrT5oRE'
-      vertcoin_download_bootstrap: True
+    - hosts: all
+      user: root
+      roles:
+        - role: ansible-role-firewalld
+          firewalld_allowed_ports:
+            - '5889/tcp'
+            - '9171/tcp'
+            - '9181/tcp'
+            - '9346/tcp'
+            - '9347/tcp'
+        - role: ansible-role-p2pool-vertcoin
+          vertcoin_rpc_user: 'rpcuser'
+          vertcoin_rpc_pass: 'MyBijv6CZt7NMjXMYqmcL9LMrT5oRE'
+          vertcoin_download_bootstrap: True
 
 On initial setup, it'll take several hours to download and load the blockchain from the bootstrap.dat. During this time, vertcoind will have high CPU usage and the p2pool sites will not load.
 
