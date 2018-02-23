@@ -1,6 +1,6 @@
 ## About
 
-An ansible role which installs vertcoind and p2pool-vtc on CentOS 7.
+An ansible role which installs vertcoind and p2pool-vtc on CentOS 7. This requires about 2.5GB of RAM.
 
 An example play, which also uses https://github.com/etcet/ansible-role-firewalld to open ports.
 
